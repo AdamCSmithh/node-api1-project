@@ -12,7 +12,7 @@ server.get('/hello', (req, res) => {
 server.get('/api/users', (req, res) => {
     users.find()
     .then(users => {
-        res.json(users)
+        res.status(200).json(users)
     })
     .catch(err => {
         res.status(500).json({ message: "something bad happened"})
@@ -22,11 +22,15 @@ server.get('/api/users', (req, res) => {
 server.get('/api/users/:id', (req, res) => {
     const { id } = req.params;
     users.findById(id)
-    .then(user => {
-        res.json(user)
+    .then(user => { 
+        if(!id){
+        res.status(404).json({message: "the user with the specified ID does not exist"})
+        }else{
+        res.status(200).json(user)
+        }
     })
     .catch(err => {
-        res.status(500).json({message: "Couldn't find user"})
+        res.status(500).json({message: "The user information could not be retrieved"})
     })
 })
 
@@ -34,10 +38,10 @@ server.post('/api/users', (req, res) => {
     users.insert(req.body)
     .then(user => {
         if(!req.body.name || !req.body.bio){
-            res.status(400).json({message: "need a name an bio"})
+            res.status(400).json({message: "Please provide name and bio for the user"})
         }
         else {
-            res.json(user)
+            res.status(201).json(user)
         }
         })
     .catch(err => {
@@ -52,10 +56,12 @@ server.put('/api/users/:id', (req, res) => {
     .then(user => {
         if(!user) {
             res.status(404).json({
-                message: `user by id ${id} does not exist`
+                message: `The user with the specified ID does not exist`
             })
+        } else if (!req.body.name || !req.body.bio){
+            res.status(400).json({message: "Please provide name and bio for the user"})            
         } else {
-            res.json(user)
+            res.status(200).json(user)
         }
     })
     .catch(err => {
@@ -69,15 +75,15 @@ server.delete('/api/users/:id', async (req, res) => {
     .then(deletedUser => {
         if(!deletedUser) {
             res.status(404).json({
-                message: `dog by id ${id} does not exist`
+                message: `The user with the specified ID does not exist`
             })
         } else {
-            res.json(deletedUser)
+            res.status(200).json(deletedUser)
         }
     }) 
     .catch(err => {
         res.status(500).json({
-            message: 'error deleting dog',
+            message: 'The user could not be removed',
             error: err.message
         })
     })
