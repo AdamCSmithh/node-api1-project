@@ -30,13 +30,25 @@ server.post('/api/users', (req, res) => {
 })
 
 server.put('/api/users/:id', (req, res) => {
-    users.update(req.body)
+    const { id } = req.params
+    const { body } = req
+    users.update(id, body)
     .then(user => {
-        res.json(user)
+        if(!user) {
+            res.status(404).json({
+                message: `user by id ${id} does not exist`
+            })
+        } else {
+            res.json(user)
+        }
     })
     .catch(err => {
         res.status(500).json({message: "something bad happened" })
     })
+})
+
+server.delete('/api/users/:id', (req, res) => {
+    users.remove()
 })
 
 module.exports = server; // EXPORT YOUR SERVER instead of {}

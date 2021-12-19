@@ -1,2 +1,2 @@
 
-PUT http://localhost:5000/api/users/yChou
+PUT http://localhost:5000/api/users/
