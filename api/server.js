@@ -19,6 +19,17 @@ server.get('/api/users', (req, res) => {
     })
 })
 
+server.get('/api/users/:id', (req, res) => {
+    const { id } = req.params;
+    users.findById(id)
+    .then(user => {
+        res.json(user)
+    })
+    .catch(err => {
+        res.status(500).json({message: "Couldn't find user"})
+    })
+})
+
 server.post('/api/users', (req, res) => {
     users.insert(req.body)
     .then(user => {
