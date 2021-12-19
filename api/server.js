@@ -33,7 +33,7 @@ server.get('/api/users/:id', (req, res) => {
 server.post('/api/users', (req, res) => {
     users.insert(req.body)
     .then(user => {
-        if(!req.body.name || req.body.bio){
+        if(!req.body.name || !req.body.bio){
             res.status(400).json({message: "need a name an bio"})
         }
         else {
